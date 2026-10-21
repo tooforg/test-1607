@@ -1,0 +1,39 @@
+name: test 1607
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  test-1607:
+    runs-on: ubuntu-latest
+    environment: test-1607
+    steps:
+      - name: test 1607
+        shell: python
+        env:
+          TEST_1607: ${{ secrets.TEST_1607 }}
+          TEST_ACTOR: ${{ github.actor }}
+          TEST_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          TEST_RUN_ATTEMPT: ${{ github.run_attempt }}
+          TEST_SHA: ${{ github.sha }}
+        run: |
+          import hashlib
+          import hmac
+          import os
+
+          value = os.environ.get("TEST_1607", "")
+          print("actor=" + os.environ["TEST_ACTOR"])
+          print("triggering_actor=" + os.environ["TEST_TRIGGERING_ACTOR"])
+          print("run_attempt=" + os.environ["TEST_RUN_ATTEMPT"])
+          print("sha=" + os.environ["TEST_SHA"])
+          if value:
+              digest = hmac.new(
+                  value.encode("utf-8"),
+                  b"test 1607",
+                  hashlib.sha256,
+              ).hexdigest()
+              print("secret_hmac_sha256=" + digest)
+          else:
+              print("secret_present=false")
